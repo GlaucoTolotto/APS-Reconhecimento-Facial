@@ -45,5 +45,21 @@ def detecta_face(network, path_imagem, conf_min = 0.7):
 teste_imagem = 'yalefaces/train/subject01.sad.gif'
 face, imagem = detecta_face(network, teste_imagem)
 cv2_plt_imshow(imagem)
-plt.show()
-print(face.shape)
+# plt.show()
+
+def get_image_data():
+  paths = [os.path.join('yalefaces/train', f) for f in os.listdir('yalefaces/train')]
+  faces = []
+  ids = []
+  for path in paths:
+    face, imagem = detecta_face(network, path)
+    cv2_plt_imshow(imagem)
+    cv2_plt_imshow(face)
+
+    id = int(os.path.split(path)[1].split('.')[0].replace('subject', ''))
+    ids.append(id)
+    faces.append(face)
+    cv2_plt_imshow(face)
+  return np.array(ids), faces
+
+ids, faces = get_image_data()
