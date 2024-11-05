@@ -44,10 +44,6 @@ def detecta_face(network, path_imagem, conf_min = 0.7):
       cv2.rectangle(imagem, (start_x, start_y), (end_x, end_y), (0,255,0), 2)
       face = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
   return face, imagem
-# teste_imagem = 'yalefaces/train/subject01.sad.gif'
-# face, imagem = detecta_face(network, teste_imagem)
-# cv2_plt_imshow(imagem)
-# plt.show()
 
 def get_image_data():
   paths = [os.path.join('yalefaces/train', f) for f in os.listdir('yalefaces/train')]
@@ -66,19 +62,6 @@ def get_image_data():
 
 ids, faces = get_image_data()
 
-eigen_classifier = cv2.face.EigenFaceRecognizer.create()
-eigen_classifier.train(faces, ids)
-eigen_classifier.write('eigen_classifier.yml')
-
-eigen_classifier = cv2.face.EigenFaceRecognizer.create()
-eigen_classifier.read('eigen_classifier.yml')
-
-imagem_teste = 'yalefaces/test/subject03.glasses.gif'
-
-face, imagem = detecta_face(network, imagem_teste)
-cv2_plt_imshow(face)
-
-
 def teste_reconhecimento(imagem_teste, classificador, show_conf = False):
   face, imagem_np = detecta_face(network, imagem_teste)
   previsao, conf = classificador.predict(face)
@@ -89,10 +72,6 @@ def teste_reconhecimento(imagem_teste, classificador, show_conf = False):
     print(conf)
 
   return imagem_np, previsao
-
-imagem_teste = 'yalefaces/test/subject11.happy.gif'
-imagem_np, previsao = teste_reconhecimento(imagem_teste, eigen_classifier, False)
-cv2_plt_imshow(imagem_np)
 
 def avalia_algoritmo(paths, classificador):
   previsoes = []
@@ -107,12 +86,6 @@ def avalia_algoritmo(paths, classificador):
 
 paths_teste = [os.path.join('yalefaces/test', f) for f in os.listdir('yalefaces/test')]
 
-imagem_teste = 'yalefaces/test/subject01.gif'
-eigen_classifier_2 = cv2.face.EigenFaceRecognizer.create(145, 5500)
-eigen_classifier_2.train(faces, ids)
-imagem_np, prediction = teste_reconhecimento(imagem_teste, eigen_classifier_2, True)
-cv2_plt_imshow(imagem_np)
-# plt.show()
 
 def resultados_avaliacao(paths_teste, classificador):
   previsoes, saidas_esperadas = avalia_algoritmo(paths_teste, classificador)
