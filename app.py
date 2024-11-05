@@ -106,12 +106,36 @@ def avalia_algoritmo(paths, classificador):
   return np.array(previsoes), np.array(saidas_esperadas)
 
 paths_teste = [os.path.join('yalefaces/test', f) for f in os.listdir('yalefaces/test')]
-previsoes, saidas_esperadas = avalia_algoritmo(paths_teste, eigen_classifier)
 
-cm = confusion_matrix(saidas_esperadas, previsoes)
+imagem_teste = 'yalefaces/test/subject01.gif'
+eigen_classifier_2 = cv2.face.EigenFaceRecognizer.create(145, 5500)
+eigen_classifier_2.train(faces, ids)
+imagem_np, prediction = teste_reconhecimento(imagem_teste, eigen_classifier_2, True)
+cv2_plt_imshow(imagem_np)
+# plt.show()
 
-seaborn.heatmap(cm, annot=True);
+def resultados_avaliacao(paths_teste, classificador):
+  previsoes, saidas_esperadas = avalia_algoritmo(paths_teste, classificador)
+  accuracy = accuracy_score(saidas_esperadas, previsoes)
+  print(accuracy)
+  cm = confusion_matrix(saidas_esperadas, previsoes)
+  seaborn.heatmap(cm, annot = True)
+  plt.show()
+
+
+
+fisher_classifier = cv2.face.FisherFaceRecognizer.create()
+fisher_classifier.train(faces, ids)
+fisher_classifier.write('fisher_classifier.yml')
+
+fisher_classifier.read('fisher_classifier.yml')
+
+resultados_avaliacao(paths_teste, fisher_classifier)
+
+fisher_classifier_2 = cv2.face.FisherFaceRecognizer.create(5)
+fisher_classifier_2.train(faces, ids)
+imagem_teste = 'yalefaces/test/subject07.happy.gif'
+imagem_np, previsao = teste_reconhecimento(imagem_teste, fisher_classifier_2, True)
+cv2_plt_imshow(imagem_np)
 plt.show()
-
-
 
